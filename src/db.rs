@@ -1,21 +1,17 @@
-use sqlx::{Column, Row};
-use std::collections::HashMap;
+use sqlx::{prelude::FromRow, PgPool};
 
-pub async fn query_database(
-    sql: &str,
-    pool: &sqlx::PgPool,
-) -> Result<Vec<HashMap<String, serde_json::Value>>, sqlx::Error> {
-    let rows = sqlx::query(sql).fetch_all(pool).await?;
+#[derive(FromRow, Debug)]
+pub struct Country {
+    pub id: i32,
+    pub country_full_name: String,
+    pub country_code: String,
+    pub country_name_en: String,
+    pub population: i64,
+    pub area: f64,
+}
 
-    let mut results = Vec::new();
-    for row in rows {
-        let mut map = HashMap::new();
-        for (i, column) in row.columns().iter().enumerate() {
-            let value: serde_json::Value = row.try_get(i)?;
-            map.insert(column.name().to_string(), value);
-        }
-        results.push(map);
-    }
+pub async fn query_database(sql: &str, pool: &PgPool) -> Result<Vec<Country>, sqlx::Error> {
+    let countries: Vec<Country> = sqlx::query_as(sql).fetch_all(pool).await?;
 
-    Ok(results)
+    Ok(countries)
 }

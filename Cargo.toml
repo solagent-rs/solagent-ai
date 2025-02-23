@@ -19,5 +19,5 @@ topkio = "0.1.5"
 dotenv = "0.15"
 
 [[bin]]
-name = "solagent-ai-demo"
+name = "s8i"
 path = "bin/main.rs"
