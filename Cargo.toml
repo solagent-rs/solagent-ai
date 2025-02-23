@@ -1,0 +1,23 @@
+[package]
+name = "solagent-ai"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sqlx = { version = "0.8.3", features = [
+	"runtime-tokio",
+	"postgres",
+	"uuid",
+	"json",
+] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+reqwest = { version = "0.12", features = ["json"] }
+plotly = "0.12"
+topkio = "0.1.5"
+dotenv = "0.15"
+
+[[bin]]
+name = "solagent-ai-demo"
+path = "bin/main.rs"
