@@ -39,6 +39,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.96"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6b964d184e89d9b6b67dd2715bc8e74cf3107fb2b529990c90cf517326150bf4"
+
+[[package]]
 name = "async-trait"
 version = "0.1.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1848,6 +1854,7 @@ dependencies = [
 name = "solagent-ai"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "dotenv",
  "plotly",
  "reqwest",
@@ -2315,8 +2322,6 @@ dependencies = [
 [[package]]
 name = "topkio"
 version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6e11d50b30a64a350d527134c282e962b1491096e81df7fb138d49566993962"
 dependencies = [
  "async-trait",
  "futures-util",

@@ -1,5 +1,7 @@
-use reqwest::Client;
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use std::sync::{Arc, Mutex};
+use topkio::{AgentBuilder, OpenAIClient};
 
 #[derive(Serialize)]
 pub struct OpenAIRequest {
@@ -17,26 +19,29 @@ pub struct Choice {
     pub text: String,
 }
 
-pub async fn parse_user_input(input: &str) -> Result<String, reqwest::Error> {
-    let client = Client::new();
-    let api_key = "your-openai-api-key";
-    let url = "https://api.openai.com/v1/completions";
+pub async fn parse_user_input(input: &str) -> Result<String> {
+    // let url = "https://api.openai.com/v1/completions";
 
-    let request = OpenAIRequest {
-        prompt: format!("Convert this to a SQL query: {}", input),
-        max_tokens: 50,
+    let client = OpenAIClient::with_ollama("http://localhost:11434/v1");
+    let agent = AgentBuilder::new(client, "llama3.2")
+        .stream(false)
+        .temperature(0.8)
+        .build();
+
+    let result = Arc::new(Mutex::new("".to_string()));
+
+    let f = move |res: &str| {
+        print!("result: <{}>", res);
+
+        let mut result_lock = result.lock().unwrap();
+        *result_lock = res.to_string();
     };
 
-    let response = client
-        .post(url)
-        .header("Authorization", format!("Bearer {}", api_key))
-        .json(&request)
-        .send()
-        .await?
-        .json::<OpenAIResponse>()
-        .await?;
+    let prompt = format!("translate input to sql query directly, no other words or tags: eg.(select * from splash): {}", input);
 
-    Ok(response.choices[0].text.trim().to_string())
+    let _ = agent.prompt(&prompt, f).await;
+
+    Ok("SELECT * FROM splash;".to_string())
 }
 
 #[cfg(test)]

@@ -15,8 +15,9 @@ serde_json = "1.0"
 tokio = { version = "1.0", features = ["full"] }
 reqwest = { version = "0.12", features = ["json"] }
 plotly = "0.12"
-topkio = "0.1.5"
+topkio = { path = "../topkio.rs/topkio" }
 dotenv = "0.15"
+anyhow = "1.0"
 
 [[bin]]
 name = "s8i"
